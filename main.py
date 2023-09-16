@@ -1,5 +1,5 @@
 #Importing PyQt5, and system
-import sys
+import sys, webbrowser
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel, QPushButton, QListWidget, QLineEdit, QToolBar, QMenuBar, QAction, QMessageBox, QMenu, QMessageBox
 
 
