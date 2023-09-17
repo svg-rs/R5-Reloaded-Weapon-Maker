@@ -1,34 +1,263 @@
-T='Settings'
-P=open
-L=print
-K='game_folder.txt'
-import sys,webbrowser as U,os
-from PyQt5.QtWidgets import QFileDialog as V,QRadioButton,QTreeWidgetItem as W,QApplication as X,QMainWindow as Y,QWidget as Z,QVBoxLayout as a,QTabWidget as b,QLabel as G,QPushButton as c,QListWidget as Q,QLineEdit as M,QToolBar,QMenuBar,QMessageBox as A,QMenu as R,QMessageBox as A,QTableWidget,QTreeWidget as d,QTableWidgetItem,QAbstractItemView as N,QAbstractScrollArea,QAbstractItemView as N
-class e(Z):
-	def __init__(P):
-		L='font: bold;';X='mp_weapon_alternator_smg';Y='mp_weapon_defender';Z='mp_weapon_esaw';A8='mp_weapon_epg';b='mp_weapon_shotgun';e='mp_weapon_vinson';h='mp_weapon_g2';i='mp_weapon_energy_ar';j='mp_weapon_hemlok';k='mp_weapon_sniper';l='mp_weapon_dmr';m='mp_weapon_lstar';A9='mp_weapon_mastiff';n='mp_weapon_shotgun_pistol';o='mp_weapon_semipistol';p='mp_weapon_energy_shotgun';q='mp_weapon_pdw';r='mp_weapon_rspn101';s='mp_weapon_r97';t='mp_weapon_autopistol';AA='mp_weapon_smart_pistol';u='mp_weapon_lmg';v='mp_weapon_doubletake';w='mp_weapon_wingman';x=['alternator','charge_Rifle','devotion','epg','eva','flatline','g7','havoc','hemlok','kraber','longbow','lstar','mastiff','mozambique','p2020','peacekeeper','prowler','r301','r99','re45','smart_pistol','spitfire','triple_take','wingman'];y=[e,i,j,m,r,u,Z];z=[b,p,n];A0=[o,t,w];A1=[X,q,s];A2=[v,l,k,h,Y];AB=R(T);super().__init__();A=a();S=G('Weapon Info: ');S.setStyleSheet(L);A.addWidget(S);global H;H=M();H.setPlaceholderText('Weapon Name');A.addWidget(H);global I;I=M();I.setPlaceholderText('Weapon Description');A.addWidget(I);K=G('Model Selection: ');K.setStyleSheet(L);A.addWidget(K);global B;B=d();B.setHeaderLabels(['Model Type:','Model Name:']);B.setColumnWidth(0,100);B.setStyleSheet('height:125px');B.setAlternatingRowColors(True);B.setSelectionBehavior(N.SelectRows);B.setSelectionMode(N.SingleSelection);A3={'RIFLE':y,'SHOTGUN':z,'SNIPER':A2,'PISTOL':A0,'SMG':A1}
-		for(A4,A5)in A3.items():
-			for A6 in A5:B.addTopLevelItem(W([A4,A6,x[0]]))
-		A.addWidget(B)
-		def A7(item):global J,f,g;J=B.currentItem();f=J.text(0);g=J.text(1)
-		B.currentItemChanged.connect(A7);K=G('Weapon Type: ');K.setStyleSheet(L);A.addWidget(K);global D;D=Q();D.addItem('Rifle');D.addItem('Shotgun');D.addItem('Sniper');D.addItem('Pistol');A.addWidget(D);global O;O=G('Ammo List: ');O.setStyleSheet(L);A.addWidget(O);global C;C=Q();C.addItem('Heavy Ammo');C.addItem('Light Ammo');C.addItem('Energy Ammo');C.addItem('Shotgun Ammo');A.addWidget(C);U=G('Weapon Damage: ');U.setStyleSheet(L);A.addWidget(U);global E;E=M();E.setPlaceholderText('Weapon Damage Near: ');A.addWidget(E);global F;F=M();F.setPlaceholderText('Weapon Damage Far: ');A.addWidget(F);V=c('Generate Weapon');V.clicked.connect(P.generate_weapon);A.addWidget(V);P.setLayout(A)
-	def generate_weapon(B):
-		G='Error';D='\n';global C;L(J);K=os.path.join(os.path.dirname(__file__),'weapon_types/mp_weapon_types.txt')
-		if H.text()==''or I.text()==''or E.text()==''or F.text()==''or C.count()==0:A.warning(B,G,'Please fill out all fields');return
-		elif not E.text().isdigit()or not F.text().isdigit():A.warning(B,G,'Please enter valid numbers');return
-		L(K);A.information(B,'Success','Weapon created with info: \n'+'Name: '+H.text()+D+'Desc: '+I.text()+D+'Near Damage: '+E.text()+D+'Far Damage: '+F.text()+'Model: '+J+'\nGenerated at: '+S)
-class h(Y):
-	def __init__(A):
-		super().__init__();A.setWindowTitle('R5 Reloaded | Weapon Maker');A.setGeometry(600,350,650,300);B=R(T,A);A.menuBar().addMenu(B);D=B.addAction('Choose Game Folder');E=B.addAction('Help');F=B.addAction('Exit');F.triggered.connect(A.close);C=b(A);G=e();C.addTab(G,'Weapon Builder');A.setCentralWidget(C)
-		def H():U.open('https://github.com/BrickOnAWall/R5-Reloaded-Weapon-Maker')
-		def I():
-			C=V.getExistingDirectory(A,'Select Game Folder')
-			if os.path.exists(K):
-				with P(K,'r')as B:B.write(C)
-			with P(K,'w')as B:B.write(C)
-		E.triggered.connect(H);D.triggered.connect(I)
-if __name__=='__main__':
-	i=X(sys.argv);j=h()
-	if os.path.exists(K):
-		with P(K,'r')as k:S=k.read();L(S)
-	j.show();sys.exit(i.exec_())
+#Importing PyQt5, and system
+import sys, webbrowser, os
+from PyQt5.QtWidgets import QFileDialog, QRadioButton, QTreeWidgetItem, QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel, QPushButton, QListWidget, QLineEdit, QToolBar, QMenuBar, QMessageBox, QMenu, QMessageBox, QTableWidget, QTreeWidget, QTableWidgetItem, QAbstractItemView, QAbstractScrollArea, QAbstractItemView
+
+
+
+#Create new instance of Tab
+class Tab1(QWidget):
+    def __init__(self):
+
+        alternator = "mp_weapon_alternator_smg"
+        charge_Rifle = "mp_weapon_defender"
+        devotion = "mp_weapon_esaw"
+        epg = "mp_weapon_epg"
+        eva = "mp_weapon_shotgun"
+        flatline = "mp_weapon_vinson"
+        g7 = "mp_weapon_g2"
+        havoc = "mp_weapon_energy_ar"
+        hemlok = "mp_weapon_hemlok"
+        kraber = "mp_weapon_sniper"
+        longbow = "mp_weapon_dmr"
+        lstar = "mp_weapon_lstar"
+        mastiff = "mp_weapon_mastiff"
+        mozambique = "mp_weapon_shotgun_pistol"
+        p2020 = "mp_weapon_semipistol"
+        peacekeeper = "mp_weapon_energy_shotgun"
+        prowler = "mp_weapon_pdw"
+        r301 = "mp_weapon_rspn101"
+        r99 = "mp_weapon_r97"
+        re45 = "mp_weapon_autopistol"
+        smart_pistol = "mp_weapon_smart_pistol"
+        spitfire = "mp_weapon_lmg"
+        triple_take = "mp_weapon_doubletake"
+        wingman = "mp_weapon_wingman"
+        
+        common_names = ["alternator", "charge_Rifle", "devotion", "epg", 
+                        "eva", "flatline", "g7", "havoc", "hemlok", "kraber",
+                        "longbow", "lstar", "mastiff", "mozambique","p2020",
+                        "peacekeeper", "prowler", "r301", "r99", "re45", 
+                        "smart_pistol", "spitfire", "triple_take", "wingman"]
+
+        rifles = [flatline, havoc, hemlok, lstar, r301, spitfire, devotion]
+        shotguns = [eva, peacekeeper, mozambique]
+        pistols = [p2020, re45, wingman]
+        smgs = [alternator, prowler, r99]
+        snipers = [triple_take, longbow, kraber, g7, charge_Rifle]
+
+        settings_menu = QMenu("Settings")
+        
+        super().__init__()
+        layout = QVBoxLayout()
+
+        #Create a title
+        title = QLabel("Weapon Info: ")
+        title.setStyleSheet("font: bold;")
+        layout.addWidget(title)
+
+        #Create weapon name input
+        global weapon_name
+        weapon_name = QLineEdit()
+        weapon_name.setPlaceholderText("Weapon Name")
+        layout.addWidget(weapon_name)
+        
+        #Create weapon description input
+        global weapon_description
+        weapon_description = QLineEdit()
+        weapon_description.setPlaceholderText("Weapon Description")
+        layout.addWidget(weapon_description)
+
+
+        #Create a label
+        model_list = QLabel("Model Selection: ")
+        model_list.setStyleSheet("font: bold;")
+        layout.addWidget(model_list)
+
+        #Create a tree table including the weapon categories
+        global weapon_tree
+        weapon_tree = QTreeWidget()
+        weapon_tree.setHeaderLabels(["Model Type:", "Model Name:"])
+        weapon_tree.setColumnWidth(0, 100)
+        
+        #Create style sheet for tree table
+        weapon_tree.setStyleSheet("height:125px")
+        weapon_tree.setAlternatingRowColors(True)
+        weapon_tree.setSelectionBehavior(QAbstractItemView.SelectRows)
+        weapon_tree.setSelectionMode(QAbstractItemView.SingleSelection)
+
+        #Add weapons to correct tree table column
+        weaponss = {
+            "RIFLE": rifles,
+            "SHOTGUN": shotguns,
+            "SNIPER": snipers,
+            "PISTOL": pistols,
+            "SMG": smgs
+        }
+        
+        for weapon_type, weapon_list in weaponss.items():
+            for weapon in weapon_list:
+                weapon_tree.addTopLevelItem(QTreeWidgetItem([weapon_type, weapon, common_names[0]]))
+
+        layout.addWidget(weapon_tree)
+        
+        
+        #Get Model From Tree Table
+        def getModel(item):
+            global selected_model, weapon_class, weapon_IN
+            selected_model = weapon_tree.currentItem()
+            weapon_class = selected_model.text(0)
+            weapon_IN = selected_model.text(1)
+        weapon_tree.currentItemChanged.connect(getModel)
+        
+
+        
+        #Create a label
+        model_list = QLabel("Weapon Type: ")
+        model_list.setStyleSheet("font: bold;")
+        layout.addWidget(model_list)
+
+
+
+        #Create new list of weapons
+        global weapons
+        weapons = QListWidget()
+        weapons.addItem("Rifle")
+        weapons.addItem("Shotgun")
+        weapons.addItem("Sniper")
+        weapons.addItem("Pistol")
+        layout.addWidget(weapons)
+
+
+        #Create label for ammo list
+        global ammo_list
+        ammo_list = QLabel("Ammo List: ")
+        ammo_list.setStyleSheet("font: bold;")
+        layout.addWidget(ammo_list)
+
+        #Create new list of ammo types
+        global ammo_types
+        ammo_types = QListWidget()
+        ammo_types.addItem("Heavy Ammo")
+        ammo_types.addItem("Light Ammo")
+        ammo_types.addItem("Energy Ammo")
+        ammo_types.addItem("Shotgun Ammo")
+        layout.addWidget(ammo_types)
+
+        #Create label for weapon damage
+        weapon_damage = QLabel("Weapon Damage: ")
+        weapon_damage.setStyleSheet("font: bold;")
+        layout.addWidget(weapon_damage)
+
+        #Create weapon damage near input
+        global weapon_near
+        weapon_near = QLineEdit()
+        weapon_near.setPlaceholderText("Weapon Damage Near: ")
+        layout.addWidget(weapon_near)
+
+        #Create weapon damage far input
+        global weapon_far
+        weapon_far = QLineEdit()
+        weapon_far.setPlaceholderText("Weapon Damage Far: ")
+        layout.addWidget(weapon_far)
+
+        #Create Weapon List Button
+        list_weapon = QPushButton("Generate Weapon")
+        list_weapon.clicked.connect(self.generate_weapon)
+        layout.addWidget(list_weapon)
+
+        
+        #Add Widgets to layout
+        self.setLayout(layout)
+
+        
+
+    #Generate the weapon using user input
+    def generate_weapon(self):
+        global ammo_types
+        print(selected_model)
+        weapon_rifle = os.path.join(os.path.dirname(__file__), "weapon_types/mp_weapon_types.txt")
+
+        #Check if user input is valid
+        if weapon_name.text() == "" or weapon_description.text() == "" or weapon_near.text() == "" or weapon_far.text() == "" or ammo_types.count() == 0:
+            QMessageBox.warning(self, "Error", "Please fill out all fields")
+            return
+        #elif user input is not an integer
+        elif not weapon_near.text().isdigit() or not weapon_far.text().isdigit():
+            QMessageBox.warning(self, "Error", "Please enter valid numbers")
+            return
+        
+        #Clone weapon_rifle to game_folder
+        print(weapon_rifle)
+        
+
+        #Give user success popup
+        QMessageBox.information(self, "Success", "Weapon created with info: \n" + "Name: " + weapon_name.text() + "\n" + "Desc: "
+                                + weapon_description.text() + "\n" + "Near Damage: " + weapon_near.text() + "\n" + "Far Damage: " 
+                                + weapon_far.text() + "Model: " + selected_model + "\nGenerated at: " + game_folder)
+            
+
+
+    
+    
+
+#Create new window
+class MyWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("R5 Reloaded | Weapon Maker")
+        self.setGeometry(600, 350, 650, 300)
+        
+        #Create settings menu
+        settings_menu = QMenu("Settings", self)
+        self.menuBar().addMenu(settings_menu)
+        
+        
+        game_folder = settings_menu.addAction("Choose Game Folder")
+    
+        
+        #If help action is pressed, open the help window
+        help_action = settings_menu.addAction("Help")
+        
+
+        #If exit action is pressed, close the window
+        exit_action = settings_menu.addAction("Exit")
+        exit_action.triggered.connect(self.close)
+
+        tab_widget = QTabWidget(self)
+        tab1 = Tab1()
+        tab_widget.addTab(tab1, "Weapon Builder")
+        self.setCentralWidget(tab_widget)
+
+        #Create a function to open a link when help action is pressed
+        def openLink():
+            webbrowser.open("https://github.com/BrickOnAWall/R5-Reloaded-Weapon-Maker")
+            
+        #Create a function to select a game folder when game folder is pressed
+        def folderOpener():
+            folder = QFileDialog.getExistingDirectory(self, "Select Game Folder")
+            
+            #Create a file that saves the folder path 
+            #Check if folder already exists
+            if os.path.exists("game_folder.txt"):
+                with open("game_folder.txt", "r") as f:
+                    f.write(folder)
+
+            with open("game_folder.txt", "w") as f:
+                f.write(folder)
+                
+        
+
+        help_action.triggered.connect(openLink)
+        game_folder.triggered.connect(folderOpener)
+        
+
+#Start window
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MyWindow()
+    if os.path.exists("game_folder.txt"):
+                with open("game_folder.txt", "r") as f:
+                    game_folder = f.read()
+                    print(game_folder)
+    window.show()
+    sys.exit(app.exec_())
