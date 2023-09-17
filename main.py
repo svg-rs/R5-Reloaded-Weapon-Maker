@@ -1,6 +1,6 @@
 #Importing PyQt5, and system
 import sys, webbrowser, os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel, QPushButton, QListWidget, QLineEdit, QToolBar, QMenuBar, QAction, QMessageBox, QMenu, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QRadioButton, QTreeWidgetItem, QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel, QPushButton, QListWidget, QLineEdit, QToolBar, QMenuBar, QMessageBox, QMenu, QMessageBox, QTableWidget, QTreeWidget, QTableWidgetItem, QAbstractItemView, QAbstractScrollArea, QAbstractItemView
 
 
 
@@ -8,6 +8,42 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTa
 class Tab1(QWidget):
     def __init__(self):
 
+        alternator = "mp_weapon_alternator_smg"
+        charge_Rifle = "mp_weapon_defender"
+        devotion = "mp_weapon_esaw"
+        epg = "mp_weapon_epg"
+        eva = "mp_weapon_shotgun"
+        flatline = "mp_weapon_vinson"
+        g7 = "mp_weapon_g2"
+        havoc = "mp_weapon_energy_ar"
+        hemlok = "mp_weapon_hemlok"
+        kraber = "mp_weapon_sniper"
+        longbow = "mp_weapon_dmr"
+        lstar = "mp_weapon_lstar"
+        mastiff = "mp_weapon_mastiff"
+        mozambique = "mp_weapon_shotgun_pistol"
+        p2020 = "mp_weapon_semipistol"
+        peacekeeper = "mp_weapon_energy_shotgun"
+        prowler = "mp_weapon_pdw"
+        r301 = "mp_weapon_rspn101"
+        r99 = "mp_weapon_r97"
+        re45 = "mp_weapon_autopistol"
+        smart_pistol = "mp_weapon_smart_pistol"
+        spitfire = "mp_weapon_lmg"
+        triple_take = "mp_weapon_doubletake"
+        wingman = "mp_weapon_wingman"
+        
+        common_names = ["alternator", "charge_Rifle", "devotion", "epg", 
+                        "eva", "flatline", "g7", "havoc", "hemlok", "kraber",
+                        "longbow", "lstar", "mastiff", "mozambique","p2020",
+                        "peacekeeper", "prowler", "r301", "r99", "re45", 
+                        "smart_pistol", "spitfire", "triple_take", "wingman"]
+
+        rifles = [flatline, havoc, hemlok, lstar, r301, spitfire, devotion]
+        shotguns = [eva, peacekeeper, mozambique]
+        pistols = [p2020, re45, wingman]
+        smgs = [alternator, prowler, r99]
+        snipers = [triple_take, longbow, kraber, g7, charge_Rifle]
 
         settings_menu = QMenu("Settings")
         
@@ -15,7 +51,7 @@ class Tab1(QWidget):
         layout = QVBoxLayout()
 
         #Create a title
-        title = QLabel("Weapon Creator")
+        title = QLabel("Weapon Info: ")
         title.setStyleSheet("font: bold;")
         layout.addWidget(title)
 
@@ -24,18 +60,62 @@ class Tab1(QWidget):
         weapon_name = QLineEdit()
         weapon_name.setPlaceholderText("Weapon Name")
         layout.addWidget(weapon_name)
-
+        
         #Create weapon description input
         global weapon_description
         weapon_description = QLineEdit()
         weapon_description.setPlaceholderText("Weapon Description")
         layout.addWidget(weapon_description)
 
-        #Create label for weapon list
-        global weapon_list
-        weapon_list = QLabel("Weapon List: ")
-        weapon_list.setStyleSheet("font: bold;")
-        layout.addWidget(weapon_list)
+
+        #Create a label
+        model_list = QLabel("Model Selection: ")
+        model_list.setStyleSheet("font: bold;")
+        layout.addWidget(model_list)
+
+        #Create a tree table including the weapon categories
+        global weapon_tree
+        weapon_tree = QTreeWidget()
+        weapon_tree.setHeaderLabels(["Model Type:", "Model Name:"])
+        weapon_tree.setColumnWidth(0, 100)
+        
+        #Create style sheet for tree table
+        weapon_tree.setStyleSheet("height:125px")
+        weapon_tree.setAlternatingRowColors(True)
+        weapon_tree.setSelectionBehavior(QAbstractItemView.SelectRows)
+        weapon_tree.setSelectionMode(QAbstractItemView.SingleSelection)
+
+        #Add weapons to correct tree table column
+        weaponss = {
+            "RIFLE": rifles,
+            "SHOTGUN": shotguns,
+            "SNIPER": snipers,
+            "PISTOL": pistols,
+            "SMG": smgs
+        }
+        
+        for weapon_type, weapon_list in weaponss.items():
+            for weapon in weapon_list:
+                weapon_tree.addTopLevelItem(QTreeWidgetItem([weapon_type, weapon, common_names[0]]))
+
+        layout.addWidget(weapon_tree)
+        
+        
+        #Get Model From Tree Table
+        def getModel(item):
+            global selected_model, weapon_class, weapon_IN
+            selected_model = weapon_tree.currentItem()
+            weapon_class = selected_model.text(0)
+            weapon_IN = selected_model.text(1)
+        weapon_tree.currentItemChanged.connect(getModel)
+        
+
+        
+        #Create a label
+        model_list = QLabel("Weapon Type: ")
+        model_list.setStyleSheet("font: bold;")
+        layout.addWidget(model_list)
+
 
 
         #Create new list of weapons
@@ -46,6 +126,7 @@ class Tab1(QWidget):
         weapons.addItem("Sniper")
         weapons.addItem("Pistol")
         layout.addWidget(weapons)
+
 
         #Create label for ammo list
         global ammo_list
@@ -84,6 +165,7 @@ class Tab1(QWidget):
         list_weapon.clicked.connect(self.generate_weapon)
         layout.addWidget(list_weapon)
 
+        
         #Add Widgets to layout
         self.setLayout(layout)
 
@@ -92,6 +174,8 @@ class Tab1(QWidget):
     #Generate the weapon using user input
     def generate_weapon(self):
         global ammo_types
+        print(selected_model)
+        weapon_rifle = os.path.join(os.path.dirname(__file__), "weapon_types/mp_weapon_types.txt")
 
         #Check if user input is valid
         if weapon_name.text() == "" or weapon_description.text() == "" or weapon_near.text() == "" or weapon_far.text() == "" or ammo_types.count() == 0:
@@ -102,14 +186,14 @@ class Tab1(QWidget):
             QMessageBox.warning(self, "Error", "Please enter valid numbers")
             return
         
-        #Copy file within weapon_types to output
-        os.system("copy weapon_types/weapon_types.txt output/weapon_types.txt")
-
-
+        #Clone weapon_rifle to game_folder
+        print(weapon_rifle)
         
 
         #Give user success popup
-        QMessageBox.information(self, "Success", "Weapon Generated")
+        QMessageBox.information(self, "Success", "Weapon created with info: \n" + "Name: " + weapon_name.text() + "\n" + "Desc: "
+                                + weapon_description.text() + "\n" + "Near Damage: " + weapon_near.text() + "\n" + "Far Damage: " 
+                                + weapon_far.text() + "Model: " + selected_model + "\nGenerated at: " + game_folder)
             
 
 
@@ -120,14 +204,16 @@ class Tab1(QWidget):
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Modern UI with Tabs")
-        self.setGeometry(300, 300, 450, 30)
+        self.setWindowTitle("R5 Reloaded | Weapon Maker")
+        self.setGeometry(600, 350, 650, 300)
         
         #Create settings menu
         settings_menu = QMenu("Settings", self)
         self.menuBar().addMenu(settings_menu)
         
-
+        
+        game_folder = settings_menu.addAction("Choose Game Folder")
+    
         
         #If help action is pressed, open the help window
         help_action = settings_menu.addAction("Help")
@@ -145,13 +231,33 @@ class MyWindow(QMainWindow):
         #Create a function to open a link when help action is pressed
         def openLink():
             webbrowser.open("https://github.com/BrickOnAWall/R5-Reloaded-Weapon-Maker")
+            
+        #Create a function to select a game folder when game folder is pressed
+        def folderOpener():
+            folder = QFileDialog.getExistingDirectory(self, "Select Game Folder")
+            
+            #Create a file that saves the folder path 
+            #Check if folder already exists
+            if os.path.exists("game_folder.txt"):
+                with open("game_folder.txt", "r") as f:
+                    f.write(folder)
+
+            with open("game_folder.txt", "w") as f:
+                f.write(folder)
+                
+        
 
         help_action.triggered.connect(openLink)
+        game_folder.triggered.connect(folderOpener)
         
 
 #Start window
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyWindow()
+    if os.path.exists("game_folder.txt"):
+                with open("game_folder.txt", "r") as f:
+                    game_folder = f.read()
+                    print(game_folder)
     window.show()
     sys.exit(app.exec_())
