@@ -1,5 +1,5 @@
 #Importing PyQt5, and system
-import sys, webbrowser
+import sys, webbrowser, os
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel, QPushButton, QListWidget, QLineEdit, QToolBar, QMenuBar, QAction, QMessageBox, QMenu, QMessageBox
 
 
@@ -7,6 +7,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTa
 #Create new instance of Tab
 class Tab1(QWidget):
     def __init__(self):
+
+
+        settings_menu = QMenu("Settings")
+        
         super().__init__()
         layout = QVBoxLayout()
 
@@ -52,20 +56,28 @@ class Tab1(QWidget):
         #Create new list of ammo types
         global ammo_types
         ammo_types = QListWidget()
-        ammo_types.addItem("Heavy")
-        ammo_types.addItem("Light")
-        ammo_types.addItem("Energy")
+        ammo_types.addItem("Heavy Ammo")
+        ammo_types.addItem("Light Ammo")
+        ammo_types.addItem("Energy Ammo")
+        ammo_types.addItem("Shotgun Ammo")
         layout.addWidget(ammo_types)
 
+        #Create label for weapon damage
+        weapon_damage = QLabel("Weapon Damage: ")
+        weapon_damage.setStyleSheet("font: bold;")
+        layout.addWidget(weapon_damage)
+
         #Create weapon damage near input
-        global weapon_damage_near
-        weapon_damage_near = QLineEdit()
-        weapon_damage_near.setPlaceholderText("Weapon Damage Near")
+        global weapon_near
+        weapon_near = QLineEdit()
+        weapon_near.setPlaceholderText("Weapon Damage Near: ")
+        layout.addWidget(weapon_near)
 
         #Create weapon damage far input
-        global weapon_damage_far
-        weapon_damage_far = QLineEdit()
-        weapon_damage_far.setPlaceholderText("Weapon Damage Far")
+        global weapon_far
+        weapon_far = QLineEdit()
+        weapon_far.setPlaceholderText("Weapon Damage Far: ")
+        layout.addWidget(weapon_far)
 
         #Create Weapon List Button
         list_weapon = QPushButton("Generate Weapon")
@@ -75,30 +87,34 @@ class Tab1(QWidget):
         #Add Widgets to layout
         self.setLayout(layout)
 
+        
+
     #Generate the weapon using user input
     def generate_weapon(self):
         global ammo_types
-        #Output weapon info to generate_weapons.txt and replace certain strings with user input
-        with open("generate_weapons.txt", "w") as f:
-            f.write(weapon_name.text() + "\n")
-            f.write(weapon_description.text() + "\n")
-            f.write(weapons.currentItem().text() + "\n")
-            f.write(ammo_types.currentItem().text() + "\n")
-            f.write(weapon_damage_near.text() + "\n")
-            f.write(weapon_damage_far.text() + "\n")
 
-        #Open generate_weapons.txt and add new line with weapon name
-        with open("generated_weapons.txt", "a") as f:
-            f.write("\n" + weapon_name.text())
+        #Check if user input is valid
+        if weapon_name.text() == "" or weapon_description.text() == "" or weapon_near.text() == "" or weapon_far.text() == "" or ammo_types.count() == 0:
+            QMessageBox.warning(self, "Error", "Please fill out all fields")
+            return
+        #elif user input is not an integer
+        elif not weapon_near.text().isdigit() or not weapon_far.text().isdigit():
+            QMessageBox.warning(self, "Error", "Please enter valid numbers")
+            return
+        
+        #Copy file within weapon_types to output
+        os.system("copy weapon_types/weapon_types.txt output/weapon_types.txt")
+
+
+        
 
         #Give user success popup
         QMessageBox.information(self, "Success", "Weapon Generated")
             
 
-    #Go to url if user clicked
-    def open_url(self):
-        webbrowser.open_new_tab("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-        
+
+    
+    
 
 #Create new window
 class MyWindow(QMainWindow):
@@ -109,15 +125,28 @@ class MyWindow(QMainWindow):
         
         #Create settings menu
         settings_menu = QMenu("Settings", self)
-        settings_menu.addAction("Help")
-        settings_menu.addAction("Exit")
         self.menuBar().addMenu(settings_menu)
+        
+
+        
+        #If help action is pressed, open the help window
+        help_action = settings_menu.addAction("Help")
+        
+
+        #If exit action is pressed, close the window
+        exit_action = settings_menu.addAction("Exit")
+        exit_action.triggered.connect(self.close)
 
         tab_widget = QTabWidget(self)
         tab1 = Tab1()
         tab_widget.addTab(tab1, "Weapon Builder")
         self.setCentralWidget(tab_widget)
 
+        #Create a function to open a link when help action is pressed
+        def openLink():
+            webbrowser.open("https://github.com/BrickOnAWall/R5-Reloaded-Weapon-Maker")
+
+        help_action.triggered.connect(openLink)
         
 
 #Start window
