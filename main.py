@@ -32,3 +32,4 @@ if __name__=='__main__':
 	if os.path.exists(K):
 		with P(K,'r')as k:S=k.read();L(S)
 	j.show();sys.exit(i.exec_())
+#ni
